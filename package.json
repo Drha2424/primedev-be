@@ -1,0 +1,26 @@
+{
+  "name": "primedev-be",
+  "version": "1.0.0",
+  "description": "primdev intermediate class back-end 2026 project",
+  "license": "ISC",
+  "author": "Richi",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.5.0",
+    "@prisma/client": "^7.5.0",
+    "express": "^5.2.1",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "dotenv": "^17.3.1",
+    "prisma": "^7.5.0"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  }
+}
