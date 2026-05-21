@@ -1,9 +1,10 @@
-import express from "express";
+// import express from "express";
 import prisma from "../config/database.config.js";
+import { validationResult } from 'express-validator';
 
 export const getBooks = async (req, res) => {
     const books = await prisma.books.findMany();
-    res.json({
+    res.status(200).json({
       success: true,
       message: "Books retrieved successfully",
       data: books,
@@ -23,12 +24,12 @@ export const getBookById = async (req, res) => {
 
     //jika id buku tidak ditemukan
     if (!book) {
-      return res.json({
+      return res.status(404).json({
         success: false,
         message: `Book with ID: ${id} not found`,
       });
     }
-    res.json({
+    res.status(200).json({
       success: true,
       message: "Book retrieved successfully",
       data: book,
@@ -37,18 +38,26 @@ export const getBookById = async (req, res) => {
 };
 
 export const createBook = async (req, res) => {
-  
+    const validationErrors = validationResult(req)
+
+  if (!validationErrors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation error',
+      errors: validationErrors.array(),
+    })
+  }
     const { categoryId, title, author, year } = req.body;
 
     // Mengecek apakah kategori dengan ID yang diberikan ada di database menggunakan fungsi isCategoryExist
   const categoryExists = await prisma.categories.findUnique({
     where: {
-      id: id,
+      id: categoryId,
     },
   })
 
   if (!categoryExists) {
-    return res.json({
+    return res.status(404).json({
       success: false,
       message: `Category with ID: ${categoryId} not found`,
     })
@@ -63,7 +72,7 @@ export const createBook = async (req, res) => {
       },
     });
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: "Book created successfully",
       data: book,
@@ -72,6 +81,15 @@ export const createBook = async (req, res) => {
 };
 
 export const updateBook = async (req, res) => {
+  const validationErrors = validationResult(req)
+
+  if (!validationErrors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation error',
+      errors: validationErrors.array(),
+    })
+  }
   router.put("/:id", async (req, res) => {
     const id = parseInt(req.params.id);
 
@@ -84,7 +102,7 @@ export const updateBook = async (req, res) => {
     });
     // Jika buku tidak ditemukan, kirimkan pesan error
     if (!book) {
-      return res.json({
+      return res.status(404).json({
         success: false,
         message: `Book with ID: ${id} not found`,
       });
@@ -93,12 +111,12 @@ export const updateBook = async (req, res) => {
     // Mengecek apakah kategori dengan ID yang diberikan ada di database menggunakan fungsi isCategoryExist
   const categoryExists = await prisma.categories.findUnique({
     where: {
-      id: id,
+      id: categoryId,
     },
   })
 
   if (!categoryExists) {
-    return res.json({
+    return res.status(404).json({
       success: false,
       message: `Category with ID: ${categoryId} not found`,
     })
@@ -117,7 +135,7 @@ export const updateBook = async (req, res) => {
       },
     });
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: "Book updated successfully",
       data: book,
@@ -136,7 +154,7 @@ export const deleteBook = async (req, res) => {
     });
 
     if (!book) {
-      return res.json({
+      return res.status(404).json({
         success: false,
         message: `Book with ID: ${id} not found`,
       });
@@ -148,7 +166,7 @@ export const deleteBook = async (req, res) => {
       },
     });
 
-    res.json({
+    res.status(204).json({
       success: true,
       message: "Book deleted successfully",
     });

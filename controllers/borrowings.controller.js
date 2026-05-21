@@ -8,7 +8,7 @@ export const getALLBorrowings = async (req, res) => {
         },
       })
     
-      res.json({
+      res.status(200).json({
         success: true,
         message: 'Borrowings retrieved successfully',
         data: borrowings,
@@ -30,13 +30,13 @@ export const getBorrowingById = async (req, res) => {
   
     // Jika peminjaman tidak ditemukan, kirimkan pesan error
     if (!borrowing) {
-      return res.json({
+      return res.status(404).json({
         success: false,
         message: `Borrowing with ID: ${id} not found`,
       })
     }
   
-    res.json({
+    res.status(200).json({
       success: true,
       message: 'Borrowing retrieved successfully',
       data: borrowing,
@@ -51,7 +51,7 @@ export const getBorrowingById = async (req, res) => {
     const userExists = await isUserExist(userId)
   
     if (!userExists) {
-      return res.json({
+      return res.status(404).json({
         success: false,
         message: `User with ID: ${userId} not found`,
       })
@@ -61,7 +61,7 @@ export const getBorrowingById = async (req, res) => {
     const bookExists = await isBookExist(bookId)
   
     if (!bookExists) {
-      return res.json({
+      return res.status(404).json({
         success: false,
         message: `Book with ID: ${bookId} not found`,
       })
@@ -84,7 +84,7 @@ export const getBorrowingById = async (req, res) => {
       data: { available: false },
     })
   
-    res.json({
+    res.status(200).json({
       success: true,
       message: 'Borrowing created successfully',
       data: borrowing,
@@ -102,7 +102,7 @@ export const getBorrowingById = async (req, res) => {
   
     // Jika peminjaman tidak ditemukan, kirimkan pesan error
     if (!borrowing) {
-      return res.json({
+      return res.status(404).json({
         success: false,
         message: 'Borrowing not found',
       })
@@ -110,7 +110,7 @@ export const getBorrowingById = async (req, res) => {
   
     // Cek apakah buku sudah dikembalikan
     if (borrowing.returned_at) {
-      return res.json({
+      return res.status(200).json({
         success: false,
         message: 'Book already returned',
       })
@@ -132,7 +132,7 @@ export const getBorrowingById = async (req, res) => {
       data: { available: true },
     })
   
-    res.json({
+    res.status(200).json({
       success: true,
       message: 'Book returned successfully',
       data: returnedBorrowing,
@@ -155,7 +155,7 @@ export const deleteBorrowing = async (req, res) => {
 
   // Jika peminjaman tidak ditemukan, kirimkan pesan error
   if (!borrowing) {
-    return res.json({
+    return res.status(404).json({
       success: false,
       message: 'Borrowing not found',
     })
@@ -172,7 +172,7 @@ export const deleteBorrowing = async (req, res) => {
     })
   }
 
-  res.json({
+  res.status(200).json({
     success: true,
     message: 'Borrowing deleted successfully',
     data: borrowing,

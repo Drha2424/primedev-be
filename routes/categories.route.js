@@ -1,4 +1,5 @@
 import express from "express";
+import { authorizeAdmin } from "../middlewares/admin.middleware.js";
 
 import {
   createCategorie,
@@ -14,8 +15,8 @@ const router = express.Router();
 router.get("/", getAllCategories);
 router.get("/:id", getCategorieById);
 router.get('/:id/books', getAllBooksByCategoryId)
-router.post("/", createCategorie);
-router.put("/:id", updateCategorie);
-router.delete("/:id", deleteCategorie);
+router.post("/", authorizeAdmin, createCategorie);
+router.put("/:id", authorizeAdmin, updateCategorie);
+router.delete("/:id", authorizeAdmin, deleteCategorie);
 
 export default router;
