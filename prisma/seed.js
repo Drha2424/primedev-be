@@ -1,31 +1,31 @@
-import prisma from '../config/database.config.js'
+import prisma from "../configs/database.config.js";
 
 async function main() {
-  console.log("🌱 Seeding database...")
+  console.log("🌱 Seeding database...");
 
   // =========================
   // CLEAN ALL TABLES
   // =========================
-  await prisma.borrowings.deleteMany()
-  await prisma.profiles.deleteMany()
-  await prisma.books.deleteMany()
-  await prisma.categories.deleteMany()
-  await prisma.users.deleteMany()
+  await prisma.borrowings.deleteMany();
+  await prisma.profiles.deleteMany();
+  await prisma.books.deleteMany();
+  await prisma.categories.deleteMany();
+  await prisma.users.deleteMany();
 
-  console.log("🧹 All tables cleaned")
+  console.log("🧹 All tables cleaned");
 
   // =========================
   // CREATE CATEGORIES (15)
   // =========================
   const categoriesData = Array.from({ length: 15 }).map((_, i) => ({
-    name: `Category ${i + 1}`
-  }))
+    name: `Category ${i + 1}`,
+  }));
 
   const categories = await prisma.categories.createMany({
-    data: categoriesData
-  })
+    data: categoriesData,
+  });
 
-  const allCategories = await prisma.categories.findMany()
+  const allCategories = await prisma.categories.findMany();
 
   // =========================
   // CREATE USERS (20)
@@ -34,27 +34,27 @@ async function main() {
     name: `User ${i + 1}`,
     email: `user${i + 1}@example.com`,
     password: "hashedpassword123",
-    role: i === 0 ? "ADMIN" : "USER"
-  }))
+    role: i === 0 ? "ADMIN" : "USER",
+  }));
 
   await prisma.users.createMany({
-    data: usersData
-  })
+    data: usersData,
+  });
 
-  const allUsers = await prisma.users.findMany()
+  const allUsers = await prisma.users.findMany();
 
   // =========================
   // CREATE PROFILES (1:1 USERS)
   // =========================
-  const profilesData = allUsers.map(user => ({
+  const profilesData = allUsers.map((user) => ({
     userId: user.id,
     address: `Address ${user.id}`,
-    phone: `08123${10000 + user.id}`
-  }))
+    phone: `08123${10000 + user.id}`,
+  }));
 
   await prisma.profiles.createMany({
-    data: profilesData
-  })
+    data: profilesData,
+  });
 
   // =========================
   // CREATE BOOKS (25)
@@ -64,37 +64,38 @@ async function main() {
     author: `Author ${i + 1}`,
     year: 2000 + (i % 20),
     available: Math.random() > 0.3,
-    categoryId: allCategories[Math.floor(Math.random() * allCategories.length)].id
-  }))
+    categoryId:
+      allCategories[Math.floor(Math.random() * allCategories.length)].id,
+  }));
 
   await prisma.books.createMany({
-    data: booksData
-  })
+    data: booksData,
+  });
 
-  const allBooks = await prisma.books.findMany()
+  const allBooks = await prisma.books.findMany();
 
   // =========================
   // CREATE BORROWINGS (30)
   // =========================
   const borrowingsData = Array.from({ length: 30 }).map(() => {
-    const user = allUsers[Math.floor(Math.random() * allUsers.length)]
-    const book = allBooks[Math.floor(Math.random() * allBooks.length)]
+    const user = allUsers[Math.floor(Math.random() * allUsers.length)];
+    const book = allBooks[Math.floor(Math.random() * allBooks.length)];
 
-    const isReturned = Math.random() > 0.5
+    const isReturned = Math.random() > 0.5;
 
     return {
       userId: user.id,
       bookId: book.id,
       borrow_date: new Date(),
-      returned_at: isReturned ? new Date() : null
-    }
-  })
+      returned_at: isReturned ? new Date() : null,
+    };
+  });
 
   await prisma.borrowings.createMany({
-    data: borrowingsData
-  })
+    data: borrowingsData,
+  });
 
-  console.log("✅ Seeding selesai!")
+  console.log("✅ Seeding selesai!");
 }
 
 // =========================
@@ -102,9 +103,9 @@ async function main() {
 // =========================
 main()
   .catch((e) => {
-    console.error(e)
-    process.exit(1)
+    console.error(e);
+    process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect()
-  })
+    await prisma.$disconnect();
+  });

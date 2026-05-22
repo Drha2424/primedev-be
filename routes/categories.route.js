@@ -2,21 +2,21 @@ import express from "express";
 import { authorizeAdmin } from "../middlewares/admin.middleware.js";
 
 import {
-  createCategorie,
-  getCategorieById,
+  createCategory,
+  getCategoryById,
   getAllBooksByCategoryId,
   getAllCategories,
-  updateCategorie,
-  deleteCategorie,
+  updateCategory,
+  deleteCategory,
 } from "../controllers/index.controller.js";
 
 const router = express.Router();
 
 router.get("/", getAllCategories);
-router.get("/:id", getCategorieById);
+router.get("/:id", getCategoryById);
 router.get('/:id/books', getAllBooksByCategoryId)
-router.post("/", authorizeAdmin, createCategorie);
-router.put("/:id", authorizeAdmin, updateCategorie);
-router.delete("/:id", authorizeAdmin, deleteCategorie);
+router.post("/", authorizeAdmin, createCategory);
+router.put("/:id", authorizeAdmin, updateCategory);
+router.delete("/:id", authorizeAdmin, deleteCategory);
 
 export default router;

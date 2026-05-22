@@ -3,14 +3,14 @@ import express from "express";
 import {
   createBorrowing,
   getBorrowingById,
-  getALLBorrowings,
+  getAllBorrowings,
   returnBook,
   deleteBorrowing,
 } from "../controllers/index.controller.js";
 
 const router = express.Router();
 
-router.get("/", getALLBorrowings);
+router.get("/", getAllBorrowings);
 router.get("/:id", getBorrowingById);
 router.post("/", createBorrowing);
 router.put("/:id", returnBook);
