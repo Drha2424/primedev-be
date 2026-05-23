@@ -10,9 +10,10 @@ import { authorizeAdmin } from "../middlewares/admin.middleware.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("Welcome to the API Library");
-});
+router.get('/', (req, res) => {
+  logger.debug('GET / - Welcome route')
+  res.send('Welcome to the API Library by DRHA (ig: @richiananta12)')
+})
 
 router.use('/auth', authRoute);
 router.use("/books", authenticateToken, booksRoute);
