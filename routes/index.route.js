@@ -7,15 +7,24 @@ import borrowingRoute from "./borrowings.route.js";
 import authRoute from "./auth.route.js";
 import { authenticateToken } from "../middlewares/auth.middleware.js";
 import { authorizeAdmin } from "../middlewares/admin.middleware.js";
+import logger from "../configs/logger.config.js";
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  logger.debug('GET / - Welcome route')
-  res.send('Welcome to the API Library by DRHA (ig: @richiananta12)')
-})
+router.get("/", (req, res) => {
+  logger.debug("GET / - Welcome route");
+  res.send("Welcome to the API Library by Drha (ig: @richiananta12)");
+});
 
-router.use('/auth', authRoute);
+router.use((req, res, next) => {
+  logger.debug(
+    { method: req.method, path: req.path, ip: req.ip },
+    "Incoming request"
+  );
+  next();
+});
+
+router.use("/auth", authRoute);
 router.use("/books", authenticateToken, booksRoute);
 router.use("/categories", authenticateToken, categorieRoute);
 router.use("/users", authenticateToken, authorizeAdmin, usersRoute);
