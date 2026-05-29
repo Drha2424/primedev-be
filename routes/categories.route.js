@@ -10,13 +10,15 @@ import {
   deleteCategory,
 } from "../controllers/index.controller.js";
 
+import { categoryValidation, updateCategoryValidation } from '../validations/categories.validation.js'
+
 const router = express.Router();
 
 router.get("/", getAllCategories);
 router.get("/:id", getCategoryById);
 router.get('/:id/books', getAllBooksByCategoryId)
-router.post("/", authorizeAdmin, createCategory);
-router.put("/:id", authorizeAdmin, updateCategory);
+router.post("/", authorizeAdmin, categoryValidation, createCategory);
+router.put("/:id", authorizeAdmin, updateCategoryValidation, updateCategory);
 router.delete("/:id", authorizeAdmin, deleteCategory);
 
 export default router;

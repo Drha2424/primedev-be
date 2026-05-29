@@ -8,11 +8,13 @@ import {
   deleteBorrowing,
 } from "../controllers/index.controller.js";
 
+import { borrowingValidation } from '../validations/borrowings.validation.js'
+
 const router = express.Router();
 
 router.get("/", getAllBorrowings);
 router.get("/:id", getBorrowingById);
-router.post("/", createBorrowing);
+router.post("/", borrowingValidation, createBorrowing);
 router.put("/:id", returnBook);
 router.delete("/:id", deleteBorrowing);
 

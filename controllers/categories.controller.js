@@ -1,5 +1,6 @@
 import prisma from "../configs/database.config.js";
 import logger from '../configs/logger.config.js'
+import { validationResult } from "express-validator";
 
 export const getAllCategories = async (req, res) => {
   try {
@@ -117,6 +118,18 @@ export const getCategoryById = async (req, res) => {
 export const createCategory = async (req, res) => {
   try {
     logger.debug({ body: req.body }, 'createCategory: Started')
+
+    const validationErrors = validationResult(req)
+
+    if (!validationErrors.isEmpty()) {
+      logger.warn({ errors: validationErrors.array() }, 'Validation failed')
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        errors: validationErrors.array(),
+      })
+    }
+
     // Mendapatkan data kategori baru dari request body
     const { name } = req.body
 
@@ -153,6 +166,17 @@ export const updateCategory = async (req, res) => {
     // Lalu mengubahnya menjadi tipe data integer menggunakan parseInt
     const id = parseInt(req.params.id)
     logger.debug({ categoryId: id, body: req.body }, 'updateCategory: Started')
+
+    const validationErrors = validationResult(req)
+
+    if (!validationErrors.isEmpty()) {
+      logger.warn({ categoryId: id, errors: validationErrors.array() }, 'Validation failed')
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        errors: validationErrors.array(),
+      })
+    }
 
     // Mendapatkan data kategori yang akan diupdate dari request body
     const { name } = req.body

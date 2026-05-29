@@ -43,8 +43,8 @@ model Profiles {
   userId    Int      @unique
   address   String?
   phone     String?
+  cloudinaryId String?
   createdAt DateTime @default(now())
-
   user Users @relation(fields: [userId], references: [id])
 }
 

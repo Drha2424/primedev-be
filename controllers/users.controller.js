@@ -1,5 +1,6 @@
 import prisma from "../configs/database.config.js";
 import logger from '../configs/logger.config.js'
+import { validationResult } from "express-validator";
 
 export const getUsers = async (req, res) => {
   try {
@@ -110,6 +111,18 @@ export const getUserById = async (req, res) => {
 export const createUser = async (req, res) => {
   try {
     logger.debug({ body: req.body }, 'createUser: Started')
+
+    const validationErrors = validationResult(req)
+
+    if (!validationErrors.isEmpty()) {
+      logger.warn({ errors: validationErrors.array() }, 'Validation failed')
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        errors: validationErrors.array(),
+      })
+    }
+
     // Mendapatkan data pengguna baru dari request body
     const { name, email, password, role } = req.body
 
@@ -146,6 +159,17 @@ export const updateUser = async (req, res) => {
     // Lalu mengubahnya menjadi tipe data integer menggunakan parseInt
     const id = parseInt(req.params.id)
     logger.debug({ userId: id, body: req.body }, 'updateUser: Started')
+
+    const validationErrors = validationResult(req)
+
+    if (!validationErrors.isEmpty()) {
+      logger.warn({ userId: id, errors: validationErrors.array() }, 'Validation failed')
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        errors: validationErrors.array(),
+      })
+    }
 
     // Mendapatkan data pengguna yang akan diupdate dari request body
     const { name, email, password, role } = req.body

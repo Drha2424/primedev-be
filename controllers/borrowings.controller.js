@@ -1,5 +1,6 @@
 import prisma from "../configs/database.config.js";
 import logger from '../configs/logger.config.js'
+import { validationResult } from "express-validator";
 import { isBookExist } from './books.controller.js'
 import { isUserExist } from './users.controller.js'
 
@@ -76,6 +77,18 @@ export const getBorrowingById = async (req, res) => {
 export const createBorrowing = async (req, res) => {
   try {
     logger.debug({ body: req.body }, 'createBorrowing: Started')
+
+    const validationErrors = validationResult(req)
+
+    if (!validationErrors.isEmpty()) {
+      logger.warn({ errors: validationErrors.array() }, 'Validation failed')
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        errors: validationErrors.array(),
+      })
+    }
+
     // Mendapatkan data userId dan bookId dari body request
     const { userId, bookId } = req.body
 
